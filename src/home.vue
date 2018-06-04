@@ -23,7 +23,7 @@
     export default {
         data() {
             return {
-                items:[{ip:'10.0.0.13'},{ip:'10.0.0.123'},{ip:'10.0.0.199'}]
+                items:[{ip:'10.0.0.13',label:'aaa'},{ip:'10.0.0.123',label:'哈哈哈'},{ip:'10.0.0.199',label:'123456678'}]
             }
         },
         mounted() {
