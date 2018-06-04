@@ -28,8 +28,8 @@
     export default {
         data() {
             return {
-                refreshsw: '停止',
-                refreshing: true
+                refreshsw: '开始',
+                refreshing: false
             }
         },
         mounted() {
