@@ -36,7 +36,9 @@
         },
         methods:{
             dofetch() {
-                this.$influx.query("select ip,last(c00) from surv where time > now() - 48h group by ip")
+                if (!this.$root.influx)
+                    return;
+                this.$root.influx.query("select ip,last(c00) from surv where time > now() - 72h group by ip")
                     .then(result => {
                         let count  = 0;
                         result.forEach(value=>{
@@ -46,37 +48,40 @@
                                 ++count;
                             }
                         });
+                        this.$root.$emit('loginfo', 'endpoints has been updated, ' + count + ' more endpoints added');
                         this.$message.success("更新完成，新增" + count + "个端点");
                     })
                     .catch(error => {
-                        console.error(error);
+                        this.$root.$emit('logerr', error);
                         this.$message.error(error);
                     });
             },
             dosave() {
-                this.$axios.post(cfg.restapi,{endpoints:this.tableData})
+                this.$axios.post(cfg.restapi + "/endpoints",{endpoints:this.tableData})
                     .then(response=>{
+                        this.$root.$emit('loginfo', 'endpoints has been saved');
                         this.$message.success("已保存");
                     })
                     .catch(error=>{
                         if (error) {
-                            console.error(error);
+                            this.$root.$emit('logerr', error);
                             this.$message.error(error);
                         }
                     });
             }
         },
         mounted() {
-                this.$axios.get(cfg.restapi)
-                    .then(response=>{
-                        this.tableData = response.data;
-                    })
-                    .catch(error=>{
-                        if (error) {
-                            console.dir(error);
-                            this.$message.error(error);
-                        }
-                    });
+            this.$root.$emit('loginfo', 'trying to get endpoints from ' + cfg.restapi);
+            this.$axios.get(cfg.restapi + "/endpoints")
+                .then(response=>{
+                    this.tableData = response.data;
+                    this.$root.$emit('loginfo', 'endpoints has been fetched');
+                })
+                .catch(error=>{
+                    if (error) {
+                        this.$root.$emit('logerr', error);
+                    }
+                });
         }
     }
 </script>
@@ -116,7 +121,7 @@
         width:450px;
         height:48px;
         background-color: #111;
-        margin-top: 8px;
+        margin-top: 12px;
         border-radius: 3px;
     }
     .el-table--enable-row-hover .el-table__body tr:hover>td {
