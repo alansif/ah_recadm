@@ -54,9 +54,13 @@
         },
         mounted() {
             (async ()=>{
-                let res = await this.$axios.get(cfg.restapi + "/tsdb");
-                this.$root.$emit('loginfo', 'tsdb configuration is ' + JSON.stringify(res.data.tsdb));
-                this.$root.influx = new Influx.InfluxDB(res.data.tsdb);
+                try {
+                    let res = await this.$axios.get(cfg.restapi + "/tsdb");
+                    this.loginfo('tsdb configuration is ' + JSON.stringify(res.data.tsdb));
+                    this.$root.influx = new Influx.InfluxDB(res.data.tsdb);
+                } catch (error) {
+                    this.logerr(error);
+                }
             })();
         },
         methods: {
