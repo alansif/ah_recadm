@@ -63,7 +63,7 @@
             mainloop() {
                 if (!this.$root.influx)
                     return;
-                this.$root.influx.query("select last(*) from surv where time > now() - 72h group by ip")
+                this.$root.influx.query("select last(*) from surv where time > now() - 10s group by ip")
                     .then(result => {
                         this.plot(result);
                     })
@@ -93,7 +93,7 @@
                             if (!v) {
                                 context.fillStyle = "#0";
                             } else {
-                                let l = v * 0.01;
+                                let l = v * 0.005;
                                 if (l > 1) l = 1;
                                 context.fillStyle = d3.hsl(240+(360-240)*l,1.0,0.1+0.5*l);
                             }
