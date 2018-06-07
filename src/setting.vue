@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="st1">
-            <el-table :data="tableData" size="mini" :max-height="450"
+            <el-table :data="tableData" size="mini" :max-height="350"
                       class="st2"
                       :header-cell-style="{backgroundColor:'#444',color:'#aaa'}"
                       :row-style="{backgroundColor:'#333',color:'#aaa'}">
                 <el-table-column label="" width="20"></el-table-column>
-                <el-table-column prop="ip" label="ip" width="100"></el-table-column>
+                <el-table-column prop="ip" label="ip" width="140"></el-table-column>
                 <el-table-column prop="label" label="标签" width="160">
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.label"></el-input>
@@ -88,8 +88,8 @@
 
 <style>
     .st1{
-        width:360px;
-        height:450px;
+        width:400px;
+        height:350px;
         background-color: #333;
         border-radius: 3px;
         overflow: hidden;
