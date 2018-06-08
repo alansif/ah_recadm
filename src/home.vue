@@ -32,17 +32,9 @@
         mounted() {
             this.$root.$off('sw');
             this.$root.$on('sw',this.onswitch);
-            (async ()=>{
-                try {
-                    this.$root.$emit('loginfo', 'trying to get endpoints from ' + cfg.restapi);
-                    let response = await this.$axios.get(cfg.restapi + "/endpoints");
-                    this.$root.$emit('loginfo', 'endpoints has been fetched');
-                    this.items = response.data.filter(v=>{return v.enabled});
-                    this.$forceUpdate();
-                } catch (error) {
-                    this.$root.$emit('logerr', error);
-                }
-            })();
+            this.$root.$off('selgroup');
+            this.$root.$on('selgroup',this.geteps);
+            this.geteps("");
         },
         beforeDestroy() {
             if (this.timer1 !== undefined) {
@@ -59,6 +51,19 @@
                     clearInterval(this.timer1);
                     this.timer1 = undefined;
                 }
+            },
+            geteps(g) {
+                (async ()=>{
+                    try {
+                        this.$root.$emit('loginfo', 'trying to get endpoints from ' + cfg.restapi);
+                        let response = await this.$axios.get(cfg.restapi + "/endpoints");
+                        this.$root.$emit('loginfo', 'endpoints has been fetched');
+                        this.items = response.data.filter(v => v.enabled && ("" === g || v.group === g));
+                        this.$forceUpdate();
+                    } catch (error) {
+                        this.$root.$emit('logerr', error);
+                    }
+                })();
             },
             mainloop() {
                 if (!this.$root.influx)
@@ -110,7 +115,6 @@
 
 <style>
     .fid {
-        border-radius: 2px;
         border:1px solid #999;
         display: inline-block;
         width:248px;

@@ -6,13 +6,25 @@
                       :header-cell-style="{backgroundColor:'#444',color:'#aaa'}"
                       :row-style="{backgroundColor:'#333',color:'#aaa'}">
                 <el-table-column label="" width="20"></el-table-column>
-                <el-table-column prop="ip" label="ip" width="140"></el-table-column>
-                <el-table-column prop="label" label="标签" width="160">
+                <el-table-column prop="ip" label="ip" width="170"></el-table-column>
+                <el-table-column prop="label" label="标签" width="180">
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.label"></el-input>
                     </template>
                 </el-table-column>
-                <el-table-column prop="enabled" label="监视" width="80">
+                <el-table-column prop="label" label="分类" width="160">
+                    <template slot-scope="scope">
+                        <el-select v-model="scope.row.group">
+                            <el-option
+                                    v-for="item in options"
+                                    :key="item"
+                                    :label="item"
+                                    :value="item">
+                            </el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="enabled" label="监视" align="center" width="120">
                     <template slot-scope="scope">
                         <el-switch v-model="scope.row.enabled" active-color="#13ce66"></el-switch>
                     </template>
@@ -31,7 +43,8 @@
     export default {
         data() {
             return {
-                tableData:[]
+                tableData:[],
+                options:['东环','西环']
             }
         },
         methods:{
@@ -44,7 +57,7 @@
                         result.forEach(value=>{
                             let r = this.tableData.find(v=>{return v.ip === value.ip;});
                             if (!r) {
-                                this.tableData.push({ip:value.ip, label:'', enabled:false});
+                                this.tableData.push({ip:value.ip, label:'', enabled:false, group:''});
                                 ++count;
                             }
                         });
@@ -88,7 +101,7 @@
 
 <style>
     .st1{
-        width:400px;
+        width:650px;
         height:350px;
         background-color: #333;
         border-radius: 3px;
@@ -115,6 +128,7 @@
         color:#aaa;
         background-color: transparent;
         border:none;
+        padding: 0;
     }
     .st4{
         box-sizing:border-box;
